@@ -1,15 +1,20 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { createUserDto } from '../dtos/user.dto';
-import { GuardGuard } from '../guard/guard.guard';
+import { AuthGuard } from '../guard/auth.guard';
 import { ValidateuserPipe } from '../pipes/validateuser/validateuser.pipe';
-import { UserServiceService } from '../services/user-service/user-service.service';
+import { UserServiceService } from '../services/user-service.service';
 import { Response } from 'express';
 import { EncryptPasswordPipe } from '../pipes/encrypt-password/encrypt-password.pipe';
 @Controller('user')
 export class CreateUserController {
+
+    
     constructor(private userServ:UserServiceService){}
+
+
     @Get('all')
-    fetchUserData(@Res()res:Response){
+    @UseGuards(AuthGuard)
+    fetchAllUserData(@Res()res:Response){
         return this.userServ.getuserDataFromDB()
         .then((resp)=>{
             res.status(200).json(resp);
@@ -18,6 +23,7 @@ export class CreateUserController {
     }
 
     @Get(':id')
+    @UseGuards(AuthGuard)
     fetchSingleUser(@Param('id',ParseIntPipe)id:number){
         console.log(typeof id);
         
@@ -26,7 +32,6 @@ export class CreateUserController {
 
     @Post('create')
     @UsePipes(new ValidationPipe())
-    @UseGuards(GuardGuard)
     createUser(@Res()res:Response, @Body(ValidateuserPipe,EncryptPasswordPipe)userData:createUserDto){
 
         this.userServ.createUser(userData)
@@ -41,6 +46,7 @@ export class CreateUserController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard)
     deleteUser(@Res()res:Response,@Param('id')id:number){
         this.userServ.deleteUserData(id).then(resp=>{
             if(resp.affected==1){
@@ -62,6 +68,7 @@ export class CreateUserController {
     }
 
     @Put(':id')
+    @UseGuards(AuthGuard)
     updateUser(@Param('id')id:number,@Req()req:Request,@Res()res:Response){
         const userData = req.body;
         this.userServ.updateuserData(id,userData)

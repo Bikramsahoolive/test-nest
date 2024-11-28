@@ -21,6 +21,7 @@ export class UserServiceService {
         return this.userReository.save(newUser);
         
     }
+    
     deleteUserData(id){
         const resp = this.userReository.delete(id);
         return resp;
