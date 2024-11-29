@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { createUserDto } from '../dtos/user.dto';
 import { AuthGuard } from '../guard/auth.guard';
 import { ValidateuserPipe } from '../pipes/validateuser/validateuser.pipe';
 import { UserServiceService } from '../services/user-service.service';
 import { Response } from 'express';
 import { EncryptPasswordPipe } from '../pipes/encrypt-password/encrypt-password.pipe';
+import { UserDataInterceptor } from '../interceptors/all-user/all-user.interceptor';
+import { SingleUserInterceptor } from '../interceptors/single-user/single-user.interceptor';
 @Controller('user')
 export class CreateUserController {
 
@@ -13,17 +15,15 @@ export class CreateUserController {
 
 
     @Get('all')
-    @UseGuards(AuthGuard)
-    fetchAllUserData(@Res()res:Response){
-        return this.userServ.getuserDataFromDB()
-        .then((resp)=>{
-            res.status(200).json(resp);
-            
-        })
+    // @UseGuards(AuthGuard)
+    @UseInterceptors(UserDataInterceptor)
+    fetchAllUserData(){
+        return this.userServ.getuserDataFromDB();
     }
 
     @Get(':id')
     @UseGuards(AuthGuard)
+    @UseInterceptors(SingleUserInterceptor)
     fetchSingleUser(@Param('id',ParseIntPipe)id:number){
         console.log(typeof id);
         
