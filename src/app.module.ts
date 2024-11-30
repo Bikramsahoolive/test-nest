@@ -9,19 +9,16 @@ import { User } from './typeORM/entities/user';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { LoggerService } from './logger/logger.service';
 @Module({
   imports: [UserModule,AuthModule,
     TypeOrmModule.forRoot({
-    type:'mssql',
+    type:'postgres',
     host:'localhost',
-    port: +process.env.port || 1433,
-    username:process.env.username || 'sa',
-    password:process.env.password || 'Passw0rd@2024',
-    database:process.env.database ||'userdb',
-    options:{
-      encrypt:false,
-      trustServerCertificate:true
-    },
+    port:5432,
+    username:'postgres',
+    password:'password',
+    database:'userDB',
     entities:[User],
     synchronize:true
   }),
@@ -29,6 +26,6 @@ import { JwtService } from '@nestjs/jwt';
   AuthModule
 ],
   controllers: [AppController, CreateUserController],
-  providers: [AppService,UserServiceService,AuthService,JwtService],
+  providers: [AppService,UserServiceService,AuthService,JwtService, LoggerService],
 })
 export class AppModule {}
