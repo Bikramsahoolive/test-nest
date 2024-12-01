@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -9,7 +9,8 @@ import { User } from './typeORM/entities/user';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { LoggerService } from './logger/logger.service';
+import { LoggerService } from './logger/services/logger.service';
+import { LoggerMiddleware } from './logger/middleware/logger.middleware';
 @Module({
   imports: [UserModule,AuthModule,
     TypeOrmModule.forRoot({
@@ -28,4 +29,11 @@ import { LoggerService } from './logger/logger.service';
   controllers: [AppController, CreateUserController],
   providers: [AppService,UserServiceService,AuthService,JwtService, LoggerService],
 })
-export class AppModule {}
+export class AppModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
