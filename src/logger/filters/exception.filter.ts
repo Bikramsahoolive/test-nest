@@ -26,6 +26,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       `Error: ${message} - Path: ${request.url} - Status: ${status}`,
     );
 
+    this.loggerService.errorDB(`Error: ${message} `,` Path: ${request.url} - Status: ${status}`);
     response.status(status).json(errorResponse);
   }
 }

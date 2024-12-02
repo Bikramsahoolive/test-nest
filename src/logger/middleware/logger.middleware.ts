@@ -12,17 +12,17 @@ export class LoggerMiddleware implements NestMiddleware {
     const { method, originalUrl } = req;
     const startTime = Date.now();
 
-      this.loggerService.logRequest(
-      `Req - ${method} ${originalUrl}`
-    );
+      this.loggerService.logRequest(`Method: ${method} - Path: ${originalUrl}`);
+      this.loggerService.requestDB('Request',`Method: ${method} - Path: ${originalUrl}`);
     
     
     res.on('finish', () => {
       const { statusCode } = res;
       const responseTime = Date.now() - startTime;
       this.loggerService.logResponse(
-        `Res - ${method} ${originalUrl} - Status: ${statusCode} - time: ${responseTime}ms`,
+        `Method: ${method} - Path: ${originalUrl} - Status: ${statusCode} - Time: ${responseTime}ms`,
       );
+      this.loggerService.responseDB('Response',`Method: ${method} - Path: ${originalUrl} - Status: ${statusCode} - Time: ${responseTime}ms`);
     });
 
     next();

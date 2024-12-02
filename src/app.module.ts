@@ -11,6 +11,7 @@ import { AuthService } from './auth/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoggerService } from './logger/services/logger.service';
 import { LoggerMiddleware } from './logger/middleware/logger.middleware';
+import { Log } from './typeORM/entities/log.entity';
 @Module({
   imports: [UserModule,AuthModule,
     TypeOrmModule.forRoot({
@@ -20,10 +21,10 @@ import { LoggerMiddleware } from './logger/middleware/logger.middleware';
     username:'postgres',
     password:'password',
     database:'userDB',
-    entities:[User],
+    entities:[User,Log],
     synchronize:true
   }),
-  TypeOrmModule.forFeature([User]),
+  TypeOrmModule.forFeature([User,Log]),
   AuthModule
 ],
   controllers: [AppController, CreateUserController],
