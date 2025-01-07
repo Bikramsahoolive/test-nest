@@ -7,20 +7,22 @@ import { Response } from 'express';
 import { EncryptPasswordPipe } from '../pipes/encrypt-password/encrypt-password.pipe';
 import { UserDataInterceptor } from '../interceptors/all-user/all-user.interceptor';
 import { SingleUserInterceptor } from '../interceptors/single-user/single-user.interceptor';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/typeORM/entities/user';
 @Controller('user')
 export class CreateUserController {
 
     
     constructor(private userServ:UserServiceService){}
 
-
+@ApiTags('Get Users')
     @Get('all')
     // @UseGuards(AuthGuard)
     @UseInterceptors(UserDataInterceptor)
     fetchAllUserData(){
         return this.userServ.getuserDataFromDB();
     }
-
+    @ApiTags('Get Users')
     @Get(':id')
     @UseGuards(AuthGuard)
     @UseInterceptors(SingleUserInterceptor)
@@ -31,6 +33,13 @@ export class CreateUserController {
     }
 
     @Post('create')
+    @ApiCreatedResponse({
+        description:'User Created',
+        type:User
+    })
+    @ApiBadRequestResponse({
+        description:'User Not Created, Please try again.'
+    })
     @UsePipes(new ValidationPipe())
     createUser(@Res()res:Response, @Body(ValidateuserPipe,EncryptPasswordPipe)userData:createUserDto){
 
