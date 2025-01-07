@@ -9,6 +9,7 @@ import { UserDataInterceptor } from '../interceptors/all-user/all-user.intercept
 import { SingleUserInterceptor } from '../interceptors/single-user/single-user.interceptor';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/typeORM/entities/user';
+import { UserResponse } from 'src/responseData/userResponse.dto';
 @Controller('user')
 export class CreateUserController {
 
@@ -31,7 +32,13 @@ export class CreateUserController {
         
         return{id:id,name:'jhon',email:'jhon@test.com',age:'21'};
     }
-
+    @ApiBadRequestResponse({
+        description:'User Not Found'
+    })
+    @ApiCreatedResponse({
+        description:'User Found',
+        type:UserResponse
+    })
     @Post('create')
     @ApiCreatedResponse({
         description:'User Created',
