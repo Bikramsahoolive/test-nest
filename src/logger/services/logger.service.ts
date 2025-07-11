@@ -11,6 +11,7 @@ export class LoggerService {
   errLogger:any;
   infoLogger:any;
   constructor(@InjectRepository(Log)private readonly logRepo:Repository<Log>, ){
+    //Database Stream
     const dbStream = new Writable({
         write:async (chunk:any, encoding:string,cb:Function) =>{
           try {
@@ -63,7 +64,7 @@ responseDB(message:string,context:string){
 errorDB(message:string,context:string){
   this.errLogger.error({message,context});
 }
-
+//file logger
   private requestLogger = createLogger({
     level: 'info',
     format: format.combine(

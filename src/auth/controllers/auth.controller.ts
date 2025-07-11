@@ -37,7 +37,6 @@ export class AuthController {
             if(!matchPassword){
                 res.status(400).json({status:'failure',message:'email or password is incorrect.'});
             }else{
-                console.log(userData);
                 delete userData.password;
                 req.session.user = userData;
                 res.status(200).json({username:userData.name,email:userData.email,message:'Session set successfully.'});
@@ -51,7 +50,7 @@ export class AuthController {
         if(req.session.user){
             res.status(200).json(req.session.user);
         }else{
-            res.send('session expired!')
+            res.send('session expired!');
         }
     }
 }

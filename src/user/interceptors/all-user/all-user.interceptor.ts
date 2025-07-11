@@ -8,6 +8,6 @@ export class UserDataInterceptor implements NestInterceptor {
     // const request = httpContext.getRequest();
     // const response = httpContext.getResponse();
     
-    return next.handle().pipe(map((data) => data.map(({id,name, ...user})=>{return {id,name}})));
+    return next.handle().pipe(map((data:any) => data.map(({id,name, ...user})=>{return {id,name}})));
   }
 }

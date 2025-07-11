@@ -20,7 +20,7 @@ import { Log } from './typeORM/entities/log.entity';
     port:5432,
     username:'postgres',
     password:'password',
-    database:'userDB',
+    // database:'userDB',
     entities:[User,Log],
     synchronize:true
   }),
